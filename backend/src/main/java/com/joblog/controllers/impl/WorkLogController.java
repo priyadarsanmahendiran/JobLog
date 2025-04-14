@@ -1,9 +1,8 @@
-package controllers.impl;
+package com.joblog.controllers.impl;
 
-import controllers.interfaces.ILogController;
-import lombok.extern.slf4j.Slf4j;
-import models.request.LogRequest;
-import models.response.LogResponse;
+import com.joblog.controllers.interfaces.IWorkLogController;
+import com.joblog.models.request.LogRequest;
+import com.joblog.models.response.LogResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +12,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import services.interfaces.ILogService;
+import com.joblog.services.interfaces.ILogService;
 
 import java.util.Date;
 import java.util.List;
 
 @RestController
-@Slf4j
-public class LogController implements ILogController {
+public class WorkLogController implements IWorkLogController {
 
-    private static final Logger log = LoggerFactory.getLogger(LogController.class);
+    private static final Logger log = LoggerFactory.getLogger(WorkLogController.class);
 
     @Autowired
     private ILogService logService;
@@ -41,7 +39,7 @@ public class LogController implements ILogController {
     }
 
     @Override
-    @GetMapping("/v1/getLogs/{userId}")
+    @GetMapping(value = "/v1/getLogs/{userId}", params = {"fromDate", "toDate"})
     public List<LogResponse> getLogsForUserAndTimeRange(@PathVariable String userId, @RequestParam Date fromDate, @RequestParam Date toDate) {
         return null;
     }

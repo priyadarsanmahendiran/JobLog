@@ -1,4 +1,4 @@
-package models.response;
+package com.joblog.models.response;
 
 import lombok.Data;
 

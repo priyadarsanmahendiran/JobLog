@@ -1,13 +1,13 @@
-package services.impl;
+package com.joblog.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import models.entities.Worklog;
-import models.request.LogRequest;
+import com.joblog.models.entities.Worklog;
+import com.joblog.models.request.LogRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repositories.interfaces.IWorkLogRepository;
-import services.interfaces.ILogService;
-import utils.Utils;
+import com.joblog.repositories.interfaces.IWorkLogRepository;
+import com.joblog.services.interfaces.ILogService;
+import com.joblog.utils.Utils;
 
 @Service
 @Slf4j
