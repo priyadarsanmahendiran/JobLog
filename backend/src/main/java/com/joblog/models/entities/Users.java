@@ -1,27 +1,28 @@
-package models.entities;
+package com.joblog.models.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
-import lombok.Builder;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.Id;
 
 import java.util.Date;
-import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "user")
-@Builder
-public class User {
+@Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Users {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    public Long userId;
+    @GeneratedValue
+    private UUID id;
 
     @Column(name = "name")
     public String name;
@@ -32,8 +33,5 @@ public class User {
     @Column(name = "created_ts")
     @CreationTimestamp
     public Date createdAt;
-
-    @OneToMany(mappedBy = "user_id")
-    public List<Worklog> worklogs;
 
 }

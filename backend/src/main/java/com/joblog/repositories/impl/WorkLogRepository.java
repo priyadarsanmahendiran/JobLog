@@ -1,10 +1,11 @@
-package repositories.impl;
+package com.joblog.repositories.impl;
 
-import models.entities.Worklog;
+import com.joblog.models.entities.Worklog;
 import org.springframework.stereotype.Repository;
-import repositories.interfaces.IWorkLogRepository;
+import com.joblog.repositories.interfaces.IWorkLogRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Repository
@@ -20,12 +21,12 @@ public class WorkLogRepository implements IWorkLogRepository {
     }
 
     @Override
-    public Optional<Worklog> findById(Long aLong) {
+    public Optional<Worklog> findById(UUID aLong) {
         return Optional.empty();
     }
 
     @Override
-    public boolean existsById(Long aLong) {
+    public boolean existsById(UUID aLong) {
         return false;
     }
 
@@ -35,7 +36,7 @@ public class WorkLogRepository implements IWorkLogRepository {
     }
 
     @Override
-    public Iterable<Worklog> findAllById(Iterable<Long> longs) {
+    public Iterable<Worklog> findAllById(Iterable<UUID> longs) {
         return null;
     }
 
@@ -45,7 +46,7 @@ public class WorkLogRepository implements IWorkLogRepository {
     }
 
     @Override
-    public void deleteById(Long aLong) {
+    public void deleteById(UUID aLong) {
 
     }
 
@@ -55,7 +56,7 @@ public class WorkLogRepository implements IWorkLogRepository {
     }
 
     @Override
-    public void deleteAllById(Iterable<? extends Long> longs) {
+    public void deleteAllById(Iterable<? extends UUID> longs) {
 
     }
 

@@ -1,4 +1,4 @@
-package models.request;
+package com.joblog.models.request;
 
 import lombok.Data;
 
