@@ -4,6 +4,5 @@ import com.joblog.models.request.LogRequest;
 
 public interface ILogService {
 
-    void addLogs(LogRequest logRequest);
-
+  void addLogs(LogRequest logRequest) throws RuntimeException;
 }
