@@ -24,10 +24,6 @@
 
   <properties>
     <java.version>17</java.version>
-    <sonar.coverage.jacoco.xmlReportPaths>
-      backend/target/site/jacoco/jacoco.xml
-    </sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.coverage.excludes>**/test/**</sonar.coverage.excludes>
   </properties>
 
   <build>
