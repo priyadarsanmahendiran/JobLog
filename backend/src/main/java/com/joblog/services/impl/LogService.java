@@ -1,5 +1,6 @@
 package com.joblog.services.impl;
 
+import com.joblog.exceptions.UserNotFoundException;
 import com.joblog.models.entities.Users;
 import com.joblog.models.entities.Worklog;
 import com.joblog.models.request.LogRequest;
@@ -23,11 +24,11 @@ public class LogService implements ILogService {
   @Autowired private Utils utils;
 
   @Override
-  public void addLogs(LogRequest logRequest) throws RuntimeException {
+  public void addLogs(LogRequest logRequest) throws UserNotFoundException {
     Optional<Users> user = userRepository.findById(logRequest.getUserId());
     if (user.isEmpty()) {
       log.error("User not found!: {}", logRequest.getUserId());
-      throw new RuntimeException("User not found");
+      throw new UserNotFoundException(logRequest.getUserId());
     }
     Worklog worklog = utils.transformRequestToWorklog(logRequest, user.get());
     workLogRepository.save(worklog);

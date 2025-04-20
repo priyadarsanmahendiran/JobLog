@@ -1,6 +1,7 @@
 package com.joblog.controllers.impl;
 
 import com.joblog.controllers.interfaces.IWorkLogController;
+import com.joblog.exceptions.UserNotFoundException;
 import com.joblog.models.request.LogRequest;
 import com.joblog.models.response.LogResponse;
 import com.joblog.services.interfaces.ILogService;
@@ -31,7 +32,7 @@ public class WorkLogController implements IWorkLogController {
     log.info("Add Log Request for user:{} ", logRequest.userId);
     try {
       logService.addLogs(logRequest);
-    } catch (Exception e) {
+    } catch (UserNotFoundException e) {
       return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
     log.info("Log added successfully for user: {}", logRequest.userId);
