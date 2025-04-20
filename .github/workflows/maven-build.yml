@@ -31,5 +31,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.coverage.jacoco.xmlReportPaths=joblog-backend/target/site/jacoco/jacoco.xml
-            -Dsonar.java.binaries=joblog-backend/target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml
+            -Dsonar.java.binaries=backend/target/classes
