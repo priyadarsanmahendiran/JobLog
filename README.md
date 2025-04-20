@@ -21,3 +21,5 @@ Built with Java + Spring Boot for the backend and Kotlin-based mobile UI (Androi
 
 ## Author
 Priyadarsan Mahendiran
+
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-dark.svg)](https://sonarcloud.io/summary/new_code?id=priyadarsanmahendiran_JobLog)

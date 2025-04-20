@@ -5,8 +5,6 @@ on:
     branches: [ main ] # adjust as per your branch setup
 
 env:
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
 jobs:
@@ -21,12 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '17' # or whatever version you're using
 
-      - name: Run Maven Build with Sonar
-        run: |
-            mvn clean verify sonar:sonar \
-              -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-              -Dsonar.organization=priyadarsanmahendiran \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      - name: Build with Maven
+        run: mvn clean verify
