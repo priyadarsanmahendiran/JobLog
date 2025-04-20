@@ -29,3 +29,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.coverage.jacoco.xmlReportPaths=joblog-backend/target/site/jacoco/jacoco.xml
+            -Dsonar.java.binaries=joblog-backend/target/classes
