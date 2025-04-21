@@ -1,21 +1,26 @@
 package com.joblog.models.request;
 
-import lombok.Data;
-
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LogRequest {
 
-    public String userId;
+  public UUID userId;
 
-    public Date logDate;
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  public Date logDate;
 
-    public List<String> tasksDone;
+  public List<String> tasksDone;
 
-    public List<String> tasksPlanned;
+  public List<String> tasksPlanned;
 
-    public List<String> blockers;
-
+  public List<String> blockers;
 }

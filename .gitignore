@@ -3,3 +3,4 @@ target/
 *.iml
 .idea/
 *.class
+.DS_Store

@@ -5,7 +5,7 @@
   <groupId>com.joblog</groupId>
   <artifactId>joblog</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <name>JobLog</name>
   <description>Work journal and auto stand-up generator</description>
@@ -17,17 +17,14 @@
     <relativePath/>
   </parent>
 
+  <modules>
+    <module>backend</module>
+    <module>runner</module>
+  </modules>
+
   <properties>
     <java.version>17</java.version>
   </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>com.joblog</groupId>
-      <artifactId>joblog-backend</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
 
   <build>
     <plugins>
