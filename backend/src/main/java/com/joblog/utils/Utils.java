@@ -3,6 +3,8 @@ package com.joblog.utils;
 import com.joblog.models.entities.Users;
 import com.joblog.models.entities.Worklog;
 import com.joblog.models.request.LogRequest;
+import com.joblog.models.response.LogResponse;
+import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
 
@@ -20,5 +22,19 @@ public class Utils {
     if (Objects.nonNull(logRequest.getBlockers()))
       log.setBlockers(String.join(",", logRequest.getBlockers()));
     return log;
+  }
+
+  public List<LogResponse> transformWorkLogToResponse(List<Worklog> worklogs) {
+    return worklogs.stream()
+        .map(
+            worklog -> {
+              LogResponse logResponse = new LogResponse();
+              logResponse.setLogDate(worklog.getLogDate());
+              logResponse.setTasksDone(List.of(worklog.getTasksDone().split(",")));
+              logResponse.setTasksPlanned(List.of(worklog.getTasksPlanned().split(",")));
+              logResponse.setBlockers(List.of(worklog.getBlockers().split(",")));
+              return logResponse;
+            })
+        .toList();
   }
 }
