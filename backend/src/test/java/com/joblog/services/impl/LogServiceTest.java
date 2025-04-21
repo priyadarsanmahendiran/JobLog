@@ -11,6 +11,7 @@ import com.joblog.models.request.LogRequest;
 import com.joblog.repositories.interfaces.IUserRepository;
 import com.joblog.repositories.interfaces.IWorkLogRepository;
 import com.joblog.utils.Utils;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
@@ -60,5 +61,26 @@ class LogServiceTest extends TestBase {
         .thenReturn(prepareWorkLog());
 
     Assertions.assertThrows(UserNotFoundException.class, () -> logService.addLogs(logRequest));
+  }
+
+  @Test
+  void fetchLogsByUser() {
+    UUID userId = UUID.randomUUID();
+    Worklog worklog = prepareWorkLog();
+    Mockito.when(workLogRepository.findByUserId(userId))
+        .thenReturn(Optional.of(Collections.singletonList(worklog)));
+    Mockito.when(utils.transformWorkLogToResponse(any())).thenReturn(getLogResponse());
+
+    var response = logService.fetchLogsByUser(userId);
+
+    Assertions.assertNotNull(response);
+  }
+
+  @Test
+  void fetchLogsByUserEmptyUser() {
+    UUID userId = UUID.randomUUID();
+    Mockito.when(workLogRepository.findByUserId(userId)).thenReturn(Optional.empty());
+    var response = logService.fetchLogsByUser(userId);
+    Assertions.assertEquals(0, response.size());
   }
 }

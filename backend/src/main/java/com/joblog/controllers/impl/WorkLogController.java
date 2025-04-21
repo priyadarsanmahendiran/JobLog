@@ -5,13 +5,16 @@ import com.joblog.exceptions.UserNotFoundException;
 import com.joblog.models.request.LogRequest;
 import com.joblog.models.response.LogResponse;
 import com.joblog.services.interfaces.ILogService;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,14 +38,19 @@ public class WorkLogController implements IWorkLogController {
     } catch (UserNotFoundException e) {
       return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
-    log.info("Log added successfully for user: {}", logRequest.userId);
     return new ResponseEntity<>("Log added successfully", HttpStatus.CREATED);
   }
 
   @Override
   @GetMapping("/v1/getLogs/{userId}")
   public ResponseEntity<List<LogResponse>> getLogsForUser(@PathVariable String userId) {
-    return null;
+    log.info("Fetching work logs for user: {}", userId);
+    List<LogResponse> logResponses = logService.fetchLogsByUser(UUID.fromString(userId));
+    if (CollectionUtils.isEmpty(logResponses)) {
+      return new ResponseEntity<>(Collections.emptyList(), HttpStatus.NO_CONTENT);
+    } else {
+      return new ResponseEntity<>(logResponses, HttpStatus.OK);
+    }
   }
 
   @Override

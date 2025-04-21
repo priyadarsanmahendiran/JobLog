@@ -3,8 +3,10 @@ package com.joblog;
 import com.joblog.models.entities.Users;
 import com.joblog.models.entities.Worklog;
 import com.joblog.models.request.LogRequest;
+import com.joblog.models.response.LogResponse;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class TestBase {
@@ -39,5 +41,14 @@ public class TestBase {
     worklog.setUser(prepareUser());
     worklog.setLastUpdatedAt(new Date());
     return worklog;
+  }
+
+  public static List<LogResponse> getLogResponse() {
+    LogResponse logResponse = new LogResponse();
+    logResponse.setLogDate(new Date());
+    logResponse.setTasksDone(Collections.singletonList("TASKDONE1"));
+    logResponse.setTasksPlanned(Collections.singletonList("PLANNEDTASK1"));
+    logResponse.setBlockers(Collections.singletonList("BLOCKER1"));
+    return Collections.singletonList(logResponse);
   }
 }
