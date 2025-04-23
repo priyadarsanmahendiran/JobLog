@@ -1,6 +1,5 @@
 package com.joblog.services.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.joblog.TestBase;
@@ -47,7 +46,7 @@ class LogServiceTest extends TestBase {
     Mockito.when(utils.transformRequestToWorklog(any(LogRequest.class), any(Users.class)))
         .thenReturn(log);
 
-    logService.addLogs(logRequest);
+    logService.addLogs(logRequest, UUID.randomUUID());
 
     Mockito.verify(workLogRepository, Mockito.times(1)).save(log);
   }
@@ -60,7 +59,8 @@ class LogServiceTest extends TestBase {
     Mockito.when(utils.transformRequestToWorklog(any(LogRequest.class), any(Users.class)))
         .thenReturn(prepareWorkLog());
 
-    Assertions.assertThrows(UserNotFoundException.class, () -> logService.addLogs(logRequest));
+    Assertions.assertThrows(
+        UserNotFoundException.class, () -> logService.addLogs(logRequest, UUID.randomUUID()));
   }
 
   @Test

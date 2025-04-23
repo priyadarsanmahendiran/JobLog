@@ -14,7 +14,6 @@ public class TestBase {
 
   public static LogRequest prepareLogRequest() {
     LogRequest logRequest = new LogRequest();
-    logRequest.setUserId(UUID.randomUUID());
     logRequest.setLogDate(LocalDate.now());
     logRequest.setBlockers(Collections.singletonList("BLOCKER1"));
     logRequest.setTasksDone(Collections.singletonList("TASK1"));

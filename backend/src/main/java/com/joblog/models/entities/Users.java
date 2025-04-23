@@ -30,4 +30,9 @@ public class Users {
   @Column(name = "created_ts")
   @CreationTimestamp
   public LocalDateTime createdAt;
+
+  @Column(nullable = false)
+  private String password;
+
+  private String role = "USER";
 }
