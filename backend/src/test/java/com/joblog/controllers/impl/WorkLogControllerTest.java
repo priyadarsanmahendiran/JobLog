@@ -6,7 +6,9 @@ import static org.mockito.Mockito.*;
 import com.joblog.TestBase;
 import com.joblog.exceptions.UserNotFoundException;
 import com.joblog.models.request.LogRequest;
+import com.joblog.models.response.LogResponse;
 import com.joblog.services.interfaces.ILogService;
+import java.time.LocalDate;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,5 +65,51 @@ class WorkLogControllerTest extends TestBase {
     var response = workLogController.getLogsForUser(userId);
 
     Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+  }
+
+  @Test
+  void getLogsForUserBetweenDates() {
+    String userId = "123e4567-e89b-12d3-a456-426614174000";
+    when(logService.fetchLogsByUserIdBetweenDates(any(), any(), any()))
+        .thenReturn(getLogResponse());
+    var response =
+        workLogController.getLogsForUserAndTimeRange(userId, LocalDate.now(), LocalDate.now());
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+  }
+
+  @Test
+  void getLogsForUserBetweenDatesEmptyResponse() {
+    String userId = "123e4567-e89b-12d3-a456-426614174000";
+    when(logService.fetchLogsByUserIdBetweenDates(any(), any(), any()))
+        .thenReturn(Collections.emptyList());
+    var response =
+        workLogController.getLogsForUserAndTimeRange(userId, LocalDate.now(), LocalDate.now());
+
+    Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertTrue(response.getBody().isEmpty());
+  }
+
+  @Test
+  void getLogsForUserAndDate() {
+    String userId = "123e4567-e89b-12d3-a456-426614174000";
+    LogResponse logResponse = getLogResponse().get(0);
+    when(logService.fetchLogsByUserIdAndDate(any(), any())).thenReturn(logResponse);
+    var response = workLogController.getLogsForUserAndDate(userId, LocalDate.now());
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+  }
+
+  @Test
+  void getLogsForUserAndDateEmptyResponse() {
+    String userId = "123e4567-e89b-12d3-a456-426614174000";
+    when(logService.fetchLogsByUserIdAndDate(any(), any())).thenReturn(null);
+    var response = workLogController.getLogsForUserAndDate(userId, LocalDate.now());
+
+    Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    Assertions.assertNull(response.getBody());
   }
 }

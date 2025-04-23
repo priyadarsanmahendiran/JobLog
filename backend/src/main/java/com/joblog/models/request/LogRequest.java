@@ -1,6 +1,6 @@
 package com.joblog.models.request;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ public class LogRequest {
   public UUID userId;
 
   @DateTimeFormat(pattern = "yyyy-MM-dd")
-  public Date logDate;
+  public LocalDate logDate;
 
   public List<String> tasksDone;
 

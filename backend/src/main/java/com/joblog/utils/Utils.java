@@ -37,4 +37,13 @@ public class Utils {
             })
         .toList();
   }
+
+  public LogResponse transformWorkLogToResponse(Worklog worklog) {
+    LogResponse logResponse = new LogResponse();
+    logResponse.setLogDate(worklog.getLogDate());
+    logResponse.setTasksDone(List.of(worklog.getTasksDone().split(",")));
+    logResponse.setTasksPlanned(List.of(worklog.getTasksPlanned().split(",")));
+    logResponse.setBlockers(List.of(worklog.getBlockers().split(",")));
+    return logResponse;
+  }
 }
