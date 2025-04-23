@@ -1,6 +1,7 @@
 package com.joblog.repositories.interfaces;
 
 import com.joblog.models.entities.Worklog;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -10,7 +11,8 @@ public interface IWorkLogRepository extends CrudRepository<Worklog, UUID> {
 
   Optional<List<Worklog>> findByUserId(UUID userId);
 
-  Worklog findByUserIdAndLogDate(UUID userId, String logDate);
+  Optional<List<Worklog>> findByUserIdAndLogDateBetween(
+      UUID userId, LocalDate startDate, LocalDate endDate);
 
-  void deleteByUserIdAndLogDate(UUID userId, String logDate);
+  Optional<Worklog> findByUserIdAndLogDate(UUID userId, LocalDate logDate);
 }

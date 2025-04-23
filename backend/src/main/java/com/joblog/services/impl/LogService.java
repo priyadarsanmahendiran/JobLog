@@ -9,10 +9,8 @@ import com.joblog.repositories.interfaces.IUserRepository;
 import com.joblog.repositories.interfaces.IWorkLogRepository;
 import com.joblog.services.interfaces.ILogService;
 import com.joblog.utils.Utils;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,7 @@ public class LogService implements ILogService {
 
   @Override
   public void addLogs(LogRequest logRequest) throws UserNotFoundException {
+    log.info("Add Log Request for user:{} ", logRequest.userId);
     Optional<Users> user = userRepository.findById(logRequest.getUserId());
     if (user.isEmpty()) {
       log.error("User not found!: {}", logRequest.getUserId());
@@ -40,6 +39,7 @@ public class LogService implements ILogService {
 
   @Override
   public List<LogResponse> fetchLogsByUser(UUID userId) {
+    log.info("Fetching work logs for user: {}", userId);
     Optional<List<Worklog>> worklogByUserOpt = workLogRepository.findByUserId(userId);
     if (worklogByUserOpt.isEmpty()) {
       log.info("No logs found for user: {}", userId);
@@ -47,5 +47,29 @@ public class LogService implements ILogService {
     }
     List<Worklog> worklogs = worklogByUserOpt.get();
     return utils.transformWorkLogToResponse(worklogs);
+  }
+
+  @Override
+  public List<LogResponse> fetchLogsByUserIdBetweenDates(
+      UUID userId, LocalDate fromDate, LocalDate toDate) {
+    log.info("Fetching logs for user: {} between dates: {} and {}", userId, fromDate, toDate);
+    Optional<List<Worklog>> worklogByUserOpt =
+        workLogRepository.findByUserIdAndLogDateBetween(userId, fromDate, toDate);
+    if (worklogByUserOpt.isEmpty()) {
+      log.info("No logs present for user: {} between dates: {} and {}", userId, fromDate, toDate);
+      return Collections.emptyList();
+    }
+    return utils.transformWorkLogToResponse(worklogByUserOpt.get());
+  }
+
+  @Override
+  public LogResponse fetchLogsByUserIdAndDate(UUID userId, LocalDate logDate) {
+    log.info("Fetching logs for user: {} on date: {}", userId, logDate);
+    Optional<Worklog> worklogByUserOpt = workLogRepository.findByUserIdAndLogDate(userId, logDate);
+    if (worklogByUserOpt.isEmpty()) {
+      log.info("No logs present for user: {} on date: {}", userId, logDate);
+      return null;
+    }
+    return utils.transformWorkLogToResponse(worklogByUserOpt.get());
   }
 }

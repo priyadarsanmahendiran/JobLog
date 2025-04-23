@@ -4,8 +4,9 @@ import com.joblog.models.entities.Users;
 import com.joblog.models.entities.Worklog;
 import com.joblog.models.request.LogRequest;
 import com.joblog.models.response.LogResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class TestBase {
   public static LogRequest prepareLogRequest() {
     LogRequest logRequest = new LogRequest();
     logRequest.setUserId(UUID.randomUUID());
-    logRequest.setLogDate(new Date());
+    logRequest.setLogDate(LocalDate.now());
     logRequest.setBlockers(Collections.singletonList("BLOCKER1"));
     logRequest.setTasksDone(Collections.singletonList("TASK1"));
     logRequest.setTasksPlanned(Collections.singletonList("TASK2"));
@@ -25,7 +26,7 @@ public class TestBase {
     Users users = new Users();
     users.setId(UUID.randomUUID());
     users.setName("Test User");
-    users.setCreatedAt(new Date());
+    users.setCreatedAt(LocalDateTime.now());
     users.setEmailId("test@gmail.com");
     return users;
   }
@@ -34,18 +35,18 @@ public class TestBase {
     Worklog worklog = new Worklog();
     worklog.setWorkLogId(UUID.randomUUID());
     worklog.setBlockers("BLOCKER1");
-    worklog.setCreatedAt(new Date());
-    worklog.setLogDate(new Date());
+    worklog.setCreatedAt(LocalDateTime.now());
+    worklog.setLogDate(LocalDate.now());
     worklog.setTasksPlanned("PLANNEDTASK1");
     worklog.setTasksDone("TASKDONE1");
     worklog.setUser(prepareUser());
-    worklog.setLastUpdatedAt(new Date());
+    worklog.setLastUpdatedAt(LocalDateTime.now());
     return worklog;
   }
 
   public static List<LogResponse> getLogResponse() {
     LogResponse logResponse = new LogResponse();
-    logResponse.setLogDate(new Date());
+    logResponse.setLogDate(LocalDate.now());
     logResponse.setTasksDone(Collections.singletonList("TASKDONE1"));
     logResponse.setTasksPlanned(Collections.singletonList("PLANNEDTASK1"));
     logResponse.setBlockers(Collections.singletonList("BLOCKER1"));

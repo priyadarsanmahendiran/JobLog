@@ -9,7 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +33,7 @@ public class Worklog {
   public UUID workLogId;
 
   @Column(name = "log_date")
-  public Date logDate;
+  public LocalDate logDate;
 
   @Column(name = "tasks_done")
   public String tasksDone;
@@ -45,11 +46,11 @@ public class Worklog {
 
   @Column(name = "created_ts")
   @CreationTimestamp
-  public Date createdAt;
+  public LocalDateTime createdAt;
 
   @Column(name = "last_updated_ts")
   @UpdateTimestamp
-  public Date lastUpdatedAt;
+  public LocalDateTime lastUpdatedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
