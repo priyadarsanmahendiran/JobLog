@@ -8,8 +8,10 @@ import com.joblog.exceptions.UserNotFoundException;
 import com.joblog.models.request.LogRequest;
 import com.joblog.models.response.LogResponse;
 import com.joblog.services.interfaces.ILogService;
+import com.joblog.utils.AuthUtil;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,8 @@ class WorkLogControllerTest extends TestBase {
 
   @Mock private ILogService logService;
 
+  @Mock private AuthUtil authUtil;
+
   @InjectMocks private WorkLogController workLogController;
 
   @BeforeEach
@@ -32,9 +36,10 @@ class WorkLogControllerTest extends TestBase {
   @Test
   void addLogs() {
     LogRequest logRequest = prepareLogRequest();
-    doNothing().when(logService).addLogs(any(LogRequest.class));
+    doNothing().when(logService).addLogs(any(LogRequest.class), any());
+    when(authUtil.getUserIdFromHeader(any())).thenReturn(UUID.randomUUID());
 
-    var response = workLogController.addLogs(logRequest);
+    var response = workLogController.addLogs("DUMMY", logRequest);
 
     Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
@@ -42,9 +47,10 @@ class WorkLogControllerTest extends TestBase {
   @Test
   void addLogsBadRequest() {
     LogRequest logRequest = prepareLogRequest();
-    doThrow(UserNotFoundException.class).when(logService).addLogs(any(LogRequest.class));
+    when(authUtil.getUserIdFromHeader(any())).thenReturn(UUID.randomUUID());
+    doThrow(UserNotFoundException.class).when(logService).addLogs(any(LogRequest.class), any());
 
-    var response = workLogController.addLogs(logRequest);
+    var response = workLogController.addLogs("DUMMY", logRequest);
 
     Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
@@ -53,6 +59,7 @@ class WorkLogControllerTest extends TestBase {
   void getLogsForUser() {
     String userId = "123e4567-e89b-12d3-a456-426614174000";
     when(logService.fetchLogsByUser(any())).thenReturn(getLogResponse());
+    when(authUtil.getUserIdFromHeader(any())).thenReturn(UUID.randomUUID());
     var response = workLogController.getLogsForUser(userId);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -62,6 +69,7 @@ class WorkLogControllerTest extends TestBase {
   void getLogsForUserEmptyResponse() {
     String userId = "123e4567-e89b-12d3-a456-426614174000";
     when(logService.fetchLogsByUser(any())).thenReturn(Collections.emptyList());
+    when(authUtil.getUserIdFromHeader(any())).thenReturn(UUID.randomUUID());
     var response = workLogController.getLogsForUser(userId);
 
     Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -72,6 +80,7 @@ class WorkLogControllerTest extends TestBase {
     String userId = "123e4567-e89b-12d3-a456-426614174000";
     when(logService.fetchLogsByUserIdBetweenDates(any(), any(), any()))
         .thenReturn(getLogResponse());
+    when(authUtil.getUserIdFromHeader(any())).thenReturn(UUID.randomUUID());
     var response =
         workLogController.getLogsForUserAndTimeRange(userId, LocalDate.now(), LocalDate.now());
 
@@ -84,6 +93,7 @@ class WorkLogControllerTest extends TestBase {
     String userId = "123e4567-e89b-12d3-a456-426614174000";
     when(logService.fetchLogsByUserIdBetweenDates(any(), any(), any()))
         .thenReturn(Collections.emptyList());
+    when(authUtil.getUserIdFromHeader(any())).thenReturn(UUID.randomUUID());
     var response =
         workLogController.getLogsForUserAndTimeRange(userId, LocalDate.now(), LocalDate.now());
 
@@ -97,6 +107,7 @@ class WorkLogControllerTest extends TestBase {
     String userId = "123e4567-e89b-12d3-a456-426614174000";
     LogResponse logResponse = getLogResponse().get(0);
     when(logService.fetchLogsByUserIdAndDate(any(), any())).thenReturn(logResponse);
+    when(authUtil.getUserIdFromHeader(any())).thenReturn(UUID.randomUUID());
     var response = workLogController.getLogsForUserAndDate(userId, LocalDate.now());
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -107,6 +118,7 @@ class WorkLogControllerTest extends TestBase {
   void getLogsForUserAndDateEmptyResponse() {
     String userId = "123e4567-e89b-12d3-a456-426614174000";
     when(logService.fetchLogsByUserIdAndDate(any(), any())).thenReturn(null);
+    when(authUtil.getUserIdFromHeader(any())).thenReturn(UUID.randomUUID());
     var response = workLogController.getLogsForUserAndDate(userId, LocalDate.now());
 
     Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());

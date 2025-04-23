@@ -1,10 +1,12 @@
 package com.joblog.services.impl;
 
 import com.joblog.exceptions.UserNotFoundException;
+import com.joblog.models.entities.StandupSummary;
 import com.joblog.models.entities.Users;
 import com.joblog.models.entities.Worklog;
 import com.joblog.models.request.LogRequest;
 import com.joblog.models.response.LogResponse;
+import com.joblog.repositories.interfaces.IStandupRepository;
 import com.joblog.repositories.interfaces.IUserRepository;
 import com.joblog.repositories.interfaces.IWorkLogRepository;
 import com.joblog.services.interfaces.ILogService;
@@ -25,13 +27,15 @@ public class LogService implements ILogService {
 
   @Autowired private Utils utils;
 
+  @Autowired private IStandupRepository standupRepository;
+
   @Override
-  public void addLogs(LogRequest logRequest) throws UserNotFoundException {
-    log.info("Add Log Request for user:{} ", logRequest.userId);
-    Optional<Users> user = userRepository.findById(logRequest.getUserId());
+  public void addLogs(LogRequest logRequest, UUID userId) throws UserNotFoundException {
+    log.info("Add Log Request for user:{} ", userId);
+    Optional<Users> user = userRepository.findById(userId);
     if (user.isEmpty()) {
-      log.error("User not found!: {}", logRequest.getUserId());
-      throw new UserNotFoundException(logRequest.getUserId());
+      log.error("User not found!: {}", user);
+      throw new UserNotFoundException(userId);
     }
     Worklog worklog = utils.transformRequestToWorklog(logRequest, user.get());
     workLogRepository.save(worklog);
@@ -71,5 +75,27 @@ public class LogService implements ILogService {
       return null;
     }
     return utils.transformWorkLogToResponse(worklogByUserOpt.get());
+  }
+
+  @Override
+  public List<Users> getAllActiveUsers() {
+    log.info("Fetching all active users");
+    List<Users> users = (List<Users>) userRepository.findAll();
+    if (users.isEmpty()) {
+      log.info("No active users found");
+      return Collections.emptyList();
+    }
+    return users;
+  }
+
+  @Override
+  public void generateStandupSummaryReport(UUID userId, LocalDate recordDate) {
+    Optional<Worklog> worklog = workLogRepository.findByUserIdAndLogDate(userId, recordDate);
+    if (worklog.isPresent()) {
+      log.info("Generating summary for user: {}", userId);
+      StandupSummary standupSummary = utils.generateStandupSummary(worklog.get());
+      standupRepository.save(standupSummary);
+      log.info("Summary saved for user: {}", userId);
+    }
   }
 }

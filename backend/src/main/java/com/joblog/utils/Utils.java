@@ -1,5 +1,8 @@
 package com.joblog.utils;
 
+import static com.joblog.commons.Constants.TASKS_DONE_YESTERDAY;
+
+import com.joblog.models.entities.StandupSummary;
 import com.joblog.models.entities.Users;
 import com.joblog.models.entities.Worklog;
 import com.joblog.models.request.LogRequest;
@@ -45,5 +48,23 @@ public class Utils {
     logResponse.setTasksPlanned(List.of(worklog.getTasksPlanned().split(",")));
     logResponse.setBlockers(List.of(worklog.getBlockers().split(",")));
     return logResponse;
+  }
+
+  public StandupSummary generateStandupSummary(Worklog worklog) {
+    StandupSummary standupSummary = new StandupSummary();
+    standupSummary.setSummaryDate(worklog.getLogDate());
+    standupSummary.setUserId(worklog.getUser().getId());
+    standupSummary.setSummary(generateSummary(worklog.getTasksDone()));
+    return standupSummary;
+  }
+
+  private String generateSummary(String tasksDone) {
+    String[] tasksDoneArr = tasksDone.split(",");
+    StringBuilder summary = new StringBuilder();
+    summary.append(TASKS_DONE_YESTERDAY);
+    for (String task : tasksDoneArr) {
+      summary.append(task).append(",");
+    }
+    return summary.toString();
   }
 }

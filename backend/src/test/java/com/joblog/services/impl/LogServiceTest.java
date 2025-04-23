@@ -1,14 +1,15 @@
 package com.joblog.services.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.joblog.TestBase;
 import com.joblog.exceptions.UserNotFoundException;
+import com.joblog.models.entities.StandupSummary;
 import com.joblog.models.entities.Users;
 import com.joblog.models.entities.Worklog;
 import com.joblog.models.request.LogRequest;
 import com.joblog.models.response.LogResponse;
+import com.joblog.repositories.interfaces.IStandupRepository;
 import com.joblog.repositories.interfaces.IUserRepository;
 import com.joblog.repositories.interfaces.IWorkLogRepository;
 import com.joblog.utils.Utils;
@@ -27,6 +28,8 @@ class LogServiceTest extends TestBase {
   @Mock private IWorkLogRepository workLogRepository;
 
   @Mock private IUserRepository userRepository;
+
+  @Mock private IStandupRepository standupRepository;
 
   @Mock private Utils utils;
 
@@ -47,7 +50,7 @@ class LogServiceTest extends TestBase {
     Mockito.when(utils.transformRequestToWorklog(any(LogRequest.class), any(Users.class)))
         .thenReturn(log);
 
-    logService.addLogs(logRequest);
+    logService.addLogs(logRequest, UUID.randomUUID());
 
     Mockito.verify(workLogRepository, Mockito.times(1)).save(log);
   }
@@ -60,7 +63,8 @@ class LogServiceTest extends TestBase {
     Mockito.when(utils.transformRequestToWorklog(any(LogRequest.class), any(Users.class)))
         .thenReturn(prepareWorkLog());
 
-    Assertions.assertThrows(UserNotFoundException.class, () -> logService.addLogs(logRequest));
+    Assertions.assertThrows(
+        UserNotFoundException.class, () -> logService.addLogs(logRequest, UUID.randomUUID()));
   }
 
   @Test
@@ -130,5 +134,61 @@ class LogServiceTest extends TestBase {
         .thenReturn(Optional.empty());
     var response = logService.fetchLogsByUserIdAndDate(userId, LocalDate.now());
     Assertions.assertNull(response);
+  }
+
+  @Test
+  void getAllActiveUsers_Success() {
+    Users user = prepareUser();
+    Mockito.when(userRepository.findAll()).thenReturn(Collections.singletonList(user));
+
+    List<Users> result = logService.getAllActiveUsers();
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(1, result.size());
+    Mockito.verify(userRepository, Mockito.times(1)).findAll();
+  }
+
+  @Test
+  void getAllActiveUsers_NoUsers() {
+    Mockito.when(userRepository.findAll()).thenReturn(Collections.emptyList());
+
+    List<Users> result = logService.getAllActiveUsers();
+
+    Assertions.assertNotNull(result);
+    Assertions.assertTrue(result.isEmpty());
+    Mockito.verify(userRepository, Mockito.times(1)).findAll();
+  }
+
+  @Test
+  void generateStandupSummaryReport_Success() {
+    UUID userId = UUID.randomUUID();
+    LocalDate recordDate = LocalDate.now();
+    Worklog worklog = new Worklog();
+    StandupSummary standupSummary = new StandupSummary();
+
+    Mockito.when(workLogRepository.findByUserIdAndLogDate(userId, recordDate))
+        .thenReturn(Optional.of(worklog));
+    Mockito.when(utils.generateStandupSummary(worklog)).thenReturn(standupSummary);
+
+    logService.generateStandupSummaryReport(userId, recordDate);
+
+    Mockito.verify(workLogRepository, Mockito.times(1)).findByUserIdAndLogDate(userId, recordDate);
+    Mockito.verify(utils, Mockito.times(1)).generateStandupSummary(worklog);
+    Mockito.verify(standupRepository, Mockito.times(1)).save(standupSummary);
+  }
+
+  @Test
+  void generateStandupSummaryReport_NoWorklog() {
+    UUID userId = UUID.randomUUID();
+    LocalDate recordDate = LocalDate.now();
+
+    Mockito.when(workLogRepository.findByUserIdAndLogDate(userId, recordDate))
+        .thenReturn(Optional.empty());
+
+    logService.generateStandupSummaryReport(userId, recordDate);
+
+    Mockito.verify(workLogRepository, Mockito.times(1)).findByUserIdAndLogDate(userId, recordDate);
+    Mockito.verify(utils, Mockito.never()).generateStandupSummary(any());
+    Mockito.verify(standupRepository, Mockito.never()).save(any());
   }
 }

@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(name = "/logs")
 public interface IWorkLogController {
 
-  ResponseEntity<String> addLogs(LogRequest logRequest);
+  ResponseEntity<String> addLogs(String authHeader, LogRequest logRequest);
 
-  ResponseEntity<List<LogResponse>> getLogsForUser(String userId);
+  ResponseEntity<List<LogResponse>> getLogsForUser(String authHeader);
 
   ResponseEntity<List<LogResponse>> getLogsForUserAndTimeRange(
-      String userId, LocalDate fromDate, LocalDate toDate);
+      String authHeader, LocalDate fromDate, LocalDate toDate);
 
-  ResponseEntity<LogResponse> getLogsForUserAndDate(String userId, LocalDate logDate);
+  ResponseEntity<LogResponse> getLogsForUserAndDate(String authHeader, LocalDate logDate);
 }
