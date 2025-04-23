@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WorkLogController implements IWorkLogController {
 
-  private static final Logger log = LoggerFactory.getLogger(WorkLogController.class);
-
   @Autowired private ILogService logService;
 
   @Override
