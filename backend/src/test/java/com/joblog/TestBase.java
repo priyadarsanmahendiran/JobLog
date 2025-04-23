@@ -27,6 +27,7 @@ public class TestBase {
     users.setName("Test User");
     users.setCreatedAt(LocalDateTime.now());
     users.setEmailId("test@gmail.com");
+    users.setPassword("encodedPassword");
     return users;
   }
 
