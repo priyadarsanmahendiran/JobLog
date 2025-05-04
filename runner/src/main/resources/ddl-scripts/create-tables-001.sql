@@ -27,4 +27,4 @@ CREATE TABLE standup_summary (
 );
 
 -- Composite index to speed up your most common query pattern
-CREATE INDEX idx_user_logdate ON work_log(user_id, log_date);
+CREATE INDEX idx_user_logdate ON work_logs(user_id, log_date);
