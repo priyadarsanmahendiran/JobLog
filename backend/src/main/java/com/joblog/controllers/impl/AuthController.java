@@ -4,6 +4,7 @@ import com.joblog.controllers.interfaces.IAuthController;
 import com.joblog.exceptions.UnAuthorizedException;
 import com.joblog.exceptions.UserNotFoundException;
 import com.joblog.models.request.AuthRequest;
+import com.joblog.models.response.AuthResponse;
 import com.joblog.repositories.interfaces.IUserRepository;
 import com.joblog.services.interfaces.IAuthService;
 import com.joblog.utils.JwtUtil;
@@ -32,13 +33,14 @@ public class AuthController implements IAuthController {
   @Override
   @PostMapping("/login")
   public ResponseEntity<?> login(AuthRequest authRequest) {
+    AuthResponse authResponse;
     try {
-      authService.loginUser(authRequest.getEmailId(), authRequest.getPassword());
+      authResponse = authService.loginUser(authRequest.getEmailId(), authRequest.getPassword());
     } catch (UserNotFoundException e) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     } catch (UnAuthorizedException e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(authResponse, HttpStatus.OK);
   }
 }
